@@ -28,28 +28,31 @@
    else (the semicolons ; and curly brackets { }) exactly where they are.
    ===================================================================== */
 :root{
-  --bg-app:#eef0ec;
-  --bg-panel:#fffdf8;
-  --bg-sidebar:#161a17;
-  --bg-sidebar-2:#1f251f;
-  --ink:#1c2018;
-  --ink-soft:#5c6459;
-  --ink-faint:#8b9285;
-  --line:#d9dcd1;
-  --line-strong:#b7bdae;
-  --accent:#a8732f;
-  --accent-dark:#7c5320;
-  --accent-soft:#f1e2c9;
-  --good:#3c6b4c;
-  --good-soft:#e2ecdf;
-  --bad:#9c3f34;
-  --bad-soft:#f4e1dc;
-  --warn:#a8732f;
-  --warn-soft:#f1e2c9;
+  --bg-app:#eef2f1;
+  --bg-panel:#ffffff;
+  --bg-sidebar:#0f1c1c;
+  --bg-sidebar-2:#182a29;
+  --ink:#131a19;
+  --ink-soft:#556361;
+  --ink-faint:#8a9895;
+  --line:#dbe3e0;
+  --line-strong:#b7c4c0;
+  --accent:#b8802e;
+  --accent-dark:#8a5f20;
+  --accent-soft:#f3e3c8;
+  --teal:#1f9e8a;
+  --teal-dark:#157566;
+  --teal-soft:#e1f5f1;
+  --good:#1f9e8a;
+  --good-soft:#e1f5f1;
+  --bad:#af4438;
+  --bad-soft:#f6e2de;
+  --warn:#b8802e;
+  --warn-soft:#f3e3c8;
   --font-display:'Source Serif 4', Georgia, serif;
   --font-body:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
   --font-mono:'IBM Plex Mono', 'SF Mono', monospace;
-  --radius:3px;
+  --radius:4px;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
@@ -295,13 +298,74 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent-soft);bor
 .progress-bar > div{height:100%;background:var(--accent);}
 
 @media (max-width:880px){
-  .sidebar{position:fixed;left:-220px;transition:left .18s;z-index:300;}
-  .sidebar.open{left:0;}
-  .menu-toggle{display:inline-flex !important;}
   .content{padding:16px;}
   .topbar{padding:12px 16px;}
 }
 .menu-toggle{display:none;background:none;border:1px solid var(--line-strong);border-radius:var(--radius);padding:6px 9px;cursor:pointer;}
+.mobile-more-btn{display:none;background:none;border:1px solid var(--line-strong);border-radius:var(--radius);width:34px;height:34px;font-size:18px;line-height:1;cursor:pointer;color:var(--ink-soft);}
+.mobile-topbar-logo{display:none;}
+@media (max-width:880px){
+  .mobile-more-btn{display:inline-flex;align-items:center;justify-content:center;}
+  .mobile-topbar-logo{display:block;height:28px;width:auto;border-radius:3px;}
+}
+/* ===== Splash screen ===== */
+.splash-screen{
+  position:fixed;inset:0;background:linear-gradient(160deg, var(--bg-sidebar), #0a1414);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:500;
+}
+.splash-logo{max-width:220px;margin-bottom:22px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.35));animation:splash-in .5s ease-out;}
+.splash-title{
+  font-family:var(--font-display);font-weight:700;font-size:38px;letter-spacing:.02em;color:#f6f4ec;
+  animation:splash-in .5s ease-out .1s both;
+}
+.splash-sub{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);margin-top:8px;animation:splash-in .5s ease-out .2s both;}
+.splash-bar{width:140px;height:3px;border-radius:3px;background:#22302f;margin-top:28px;overflow:hidden;}
+.splash-bar > div{height:100%;width:40%;background:var(--teal);border-radius:3px;animation:splash-load 1.4s ease-in-out infinite;}
+@keyframes splash-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes splash-load{0%{transform:translateX(-100%);}100%{transform:translateX(340%);}}
+
+/* ===== App footer (every screen) ===== */
+.app-footer{
+  text-align:center;padding:14px 10px 22px;font-family:var(--font-mono);font-size:10.5px;
+  letter-spacing:.04em;color:var(--ink-faint);
+}
+
+/* ===== Reports list (light panel — fixed hover contrast) ===== */
+.report-nav-item{
+  padding:9px 12px;border-radius:var(--radius);font-size:12.8px;color:var(--ink-soft);cursor:pointer;
+  margin-bottom:1px;border:1px solid transparent;
+}
+.report-nav-item:hover{background:#f0f2f1;color:var(--ink);}
+.report-nav-item.active{background:var(--teal-soft);color:var(--teal-dark);border-color:#bfe6dd;font-weight:600;}
+
+/* ===== Dashboard hero title ===== */
+.dash-hero{display:flex;align-items:baseline;gap:14px;margin-bottom:4px;flex-wrap:wrap;}
+.dash-hero .wordmark{
+  font-family:var(--font-display);font-weight:700;font-size:30px;letter-spacing:.01em;color:var(--ink);
+  background:linear-gradient(100deg, var(--ink) 40%, var(--teal-dark) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.dash-hero .rule{flex:1;height:1px;background:linear-gradient(90deg, var(--line-strong), transparent);min-width:40px;}
+.dash-hero .tagline{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);}
+
+/* ===== Mobile app-style bottom navigation ===== */
+.bottom-nav{display:none;}
+@media (max-width:880px){
+  .bottom-nav{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:150;
+    background:var(--bg-panel);border-top:1px solid var(--line);
+    padding:6px 2px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.06);
+  }
+  .bottom-nav-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;
+    color:var(--ink-faint);font-size:10px;font-weight:500;border:none;background:none;
+  }
+  .bottom-nav-item .bn-icon{font-size:19px;line-height:1;}
+  .bottom-nav-item.active{color:var(--teal-dark);}
+  .content{padding-bottom:78px;}
+  .sidebar{display:none;}
+  .menu-toggle{display:none !important;}
+}
 </style>
 </head>
 <body>
@@ -407,11 +471,11 @@ function defaultConfig(){
     ocrEnabled:false,
     roles: ['Admin', 'Book Building', 'Physical Verification', 'Reconciliation'],
     users: [
-      { id:'u_admin', name:'Audit Lead', role:'Admin', active:true, passwordHash:'bf0c008705cb952d86d83f3be0c9a9fd18714323fc314bcbc06a8f8d155c2298', passwordSalt:'demo-salt-2026', mustChangePassword:true },
-      { id:'u_bb1', name:'Book Building — Person 1', role:'Book Building', active:true, passwordHash:'bf0c008705cb952d86d83f3be0c9a9fd18714323fc314bcbc06a8f8d155c2298', passwordSalt:'demo-salt-2026', mustChangePassword:true },
-      { id:'u_bb2', name:'Book Building — Person 2', role:'Book Building', active:true, passwordHash:'bf0c008705cb952d86d83f3be0c9a9fd18714323fc314bcbc06a8f8d155c2298', passwordSalt:'demo-salt-2026', mustChangePassword:true },
-      { id:'u_pv1', name:'Physical Verification — Team A', role:'Physical Verification', active:true, passwordHash:'bf0c008705cb952d86d83f3be0c9a9fd18714323fc314bcbc06a8f8d155c2298', passwordSalt:'demo-salt-2026', mustChangePassword:true },
-      { id:'u_recon1', name:'Reconciliation — Reviewer', role:'Reconciliation', active:true, passwordHash:'bf0c008705cb952d86d83f3be0c9a9fd18714323fc314bcbc06a8f8d155c2298', passwordSalt:'demo-salt-2026', mustChangePassword:true },
+      { id:'u_admin', name:'Audit Lead', email:'admin@demo.assetverse', role:'Admin', active:true, passwordHash:'bf0c008705cb952d86d83f3be0c9a9fd18714323fc314bcbc06a8f8d155c2298', passwordSalt:'demo-salt-2026', mustChangePassword:true },
+      { id:'u_bb1', name:'Book Building — Person 1', email:'bookbuilding1@demo.assetverse', role:'Book Building', active:true, passwordHash:'bf0c008705cb952d86d83f3be0c9a9fd18714323fc314bcbc06a8f8d155c2298', passwordSalt:'demo-salt-2026', mustChangePassword:true },
+      { id:'u_bb2', name:'Book Building — Person 2', email:'bookbuilding2@demo.assetverse', role:'Book Building', active:true, passwordHash:'bf0c008705cb952d86d83f3be0c9a9fd18714323fc314bcbc06a8f8d155c2298', passwordSalt:'demo-salt-2026', mustChangePassword:true },
+      { id:'u_pv1', name:'Physical Verification — Team A', email:'fieldteam1@demo.assetverse', role:'Physical Verification', active:true, passwordHash:'bf0c008705cb952d86d83f3be0c9a9fd18714323fc314bcbc06a8f8d155c2298', passwordSalt:'demo-salt-2026', mustChangePassword:true },
+      { id:'u_recon1', name:'Reconciliation — Reviewer', email:'reconciliation1@demo.assetverse', role:'Reconciliation', active:true, passwordHash:'bf0c008705cb952d86d83f3be0c9a9fd18714323fc314bcbc06a8f8d155c2298', passwordSalt:'demo-salt-2026', mustChangePassword:true },
     ],
   };
 }
@@ -437,6 +501,7 @@ const STATE = {
     currentUserId: null,
   },
   loaded:false,
+  showSplash:true,
 };
 
 /* ============================ ROLES & PERMISSIONS ===============================
@@ -454,6 +519,11 @@ const ROLE_VIEW_ACCESS = {
   'Physical Verification':  { dashboard:'view', master:'none', pv:'full', reconciliation:'none', valuation:'none', reports:'view', settings:'none' },
   'Reconciliation':         { dashboard:'view', master:'view', pv:'view', reconciliation:'full', valuation:'full', reports:'view', settings:'none' },
 };
+function findUserByEmail(email){
+  const norm = String(email||'').trim().toLowerCase();
+  if(!norm) return null;
+  return STATE.config.users.find(u=>String(u.email||'').trim().toLowerCase()===norm) || null;
+}
 function currentUser(){
   return STATE.config.users.find(u=>u.id===STATE.session.currentUserId && u.active!==false) || null;
 }
@@ -788,7 +858,7 @@ async function pushUsers(){
   if(!sheetsEnabled()) return;
   const now = new Date().toISOString();
   const records = STATE.config.users.map(u=>({
-    id:u.id, name:u.name, role:u.role, active: u.active!==false,
+    id:u.id, name:u.name, email:u.email||'', role:u.role, active: u.active!==false,
     passwordHash: u.passwordHash||'', passwordSalt: u.passwordSalt||'',
     mustChangePassword: !!u.mustChangePassword, updatedAt: now
   }));
@@ -810,7 +880,7 @@ async function pullFromSheets(){
     }
     if(Array.isArray(data.users) && data.users.length){
       STATE.config.users = data.users.map(u=>({
-        id:u.id, name:u.name, role:u.role, active: (u.active===true || u.active==='true'),
+        id:u.id, name:u.name, email:u.email||'', role:u.role, active: (u.active===true || u.active==='true'),
         passwordHash: u.passwordHash||'', passwordSalt: u.passwordSalt||'',
         mustChangePassword: (u.mustChangePassword===true || u.mustChangePassword==='true'),
       }));
@@ -1024,10 +1094,26 @@ function seedDemoData(){
   // assign tag IDs for seeded physical assets using the standard generator
   STATE.physical.forEach(p=>{ p.tagId = generateTagId(p.assetGroup, p.locationId); });
 
-  STATE.matches = [];
-  STATE.valuations = [];
+  // pre-approve a couple of matches and pre-value the excess asset so every
+  // tab (Reconciliation, Valuation, Reports) has realistic sample content
+  // for UAT straight away, without needing to click "Run auto-reconciliation"
+  // first. Two FAR/PV pairs are matched; the rest are left open on purpose
+  // so the exception reports (Unreconciled FAR, etc.) also have content.
+  const far1 = STATE.master[0], phy1 = STATE.physical[0];   // CNC Lathe Machine
+  const far2 = STATE.master[1], phy2 = STATE.physical[1];   // Hydraulic Press
+  far1.status = 'reconciled'; far1.pvCode = phy1.tagId; phy1.status = 'matched'; phy1.matchedFarId = far1.id;
+  far2.status = 'reconciled'; far2.pvCode = phy2.tagId; phy2.status = 'matched'; phy2.matchedFarId = far2.id;
+  STATE.matches = [
+    { id: uid('match'), farId:far1.id, physicalId:phy1.id, basis:['location','asset class','description','make','model','year'], confidence:95, status:'approved', createdDate:new Date().toISOString(), approvedBy:'Audit Lead (Admin)', approvedDate:new Date().toISOString(), rejectedDate:'' },
+    { id: uid('match'), farId:far2.id, physicalId:phy2.id, basis:['location','asset class','description','make','model'], confidence:90, status:'approved', createdDate:new Date().toISOString(), approvedBy:'Audit Lead (Admin)', approvedDate:new Date().toISOString(), rejectedDate:'' },
+  ];
+  const excessAc = STATE.physical[STATE.physical.length-1]; // Voltas AC units — left unmatched by design
+  STATE.valuations = [
+    { id: uid('val'), physicalId: excessAc.id, value: 68000, valuationDate: todayISO(), valuedBy:'External Valuer — R.K. Associates', notes:'Independent valuation of excess split AC units found during physical verification; not recorded in FAR.' },
+  ];
+  excessAc.status = 'confirmed-excess';
   STATE.log = [
-    { id: uid('log'), ts: new Date().toISOString(), entity:'system', entityId:'', field:'', oldValue:'', newValue:'', user:'System', note:'Demo dataset initialised.' }
+    { id: uid('log'), ts: new Date().toISOString(), entity:'system', entityId:'', field:'', oldValue:'', newValue:'', user:'System', note:'Demo dataset initialised — 2 assets pre-reconciled, 1 excess asset pre-valued, remainder left open for UAT.' }
   ];
 }
 
@@ -1502,6 +1588,23 @@ function closeModal(){
    nothing pulled from a shared database). Lets a paying client start clean
    rather than being handed someone else's demo data — while still letting
    the tool's own team explore it instantly with realistic sample data. */
+/* ============================ SPLASH SCREEN ===================================
+   Brief branded opener shown once per app launch (both as the plain HTML
+   tool and once installed as an app) before anything else — sign-in, the
+   first-run choice, or the dashboard. Purely cosmetic; auto-dismisses. */
+function renderSplashScreen(){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="splash-screen">
+      ${STATE.config.logoDataUrl ? `<img src="${STATE.config.logoDataUrl}" class="splash-logo" alt="">` : ''}
+      <div class="splash-title">${esc(STATE.config.sidebarTagline || 'Asset Verse')}</div>
+      <div class="splash-sub">Fixed Asset Verification &amp; Reconciliation</div>
+      <div class="splash-bar"><div></div></div>
+    </div>
+  `;
+  setTimeout(()=>{ STATE.showSplash = false; render(); }, 1400);
+}
+
 function renderFirstRunChoice(){
   const app = document.getElementById('app');
   app.innerHTML = `
@@ -1543,109 +1646,61 @@ function renderFirstRunChoice(){
 /* ============================ SIGN-IN GATE ===================================== */
 function renderSignInScreen(){
   const app = document.getElementById('app');
-  const users = STATE.config.users.filter(u=>u.active!==false);
-  let selectedUserId = null;
 
-  function renderList(){
-    app.innerHTML = `
-      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg-sidebar);padding:24px;">
-        <div class="panel" style="max-width:440px;width:100%;background:var(--bg-panel);">
-          <div style="padding:26px 26px 10px;text-align:center;">
-            ${STATE.config.logoDataUrl ? `<img src="${STATE.config.logoDataUrl}" style="max-width:180px;margin:0 auto 14px;display:block;">` : `<div class="firm-logo" style="justify-content:center;margin-bottom:14px;"><span class="firm-badge">${esc(STATE.config.firmInitials||'FIRM')}</span><span class="firm-name" style="color:var(--ink);">${esc(STATE.config.firmName||'')}</span></div>`}
-            <h2 style="font-family:var(--font-display);margin:4px 0 4px;">Sign in</h2>
-            <div class="hint">Select your name to open ${esc(STATE.config.sidebarTagline||'Asset Verse')}.</div>
-          </div>
-          <div class="panel-body" style="padding-top:10px;">
-            ${users.length ? users.map(u=>`
-              <div class="field-row" data-signin="${u.id}" style="cursor:pointer;justify-content:space-between;">
-                <div><b>${esc(u.name)}</b></div>
-                <span class="pill neutral">${esc(u.role)}</span>
-              </div>
-            `).join('') : `<div class="empty"><div class="msg">No team members configured yet — add one below.</div></div>`}
-
-            <div style="margin-top:14px;border-top:1px solid var(--line);padding-top:14px;">
-              <button class="btn btn-sm" id="toggle-add-user">+ I'm new here — add me</button>
-              <div id="add-user-form" style="display:none;margin-top:10px;">
-                <label class="field"><span class="lbl">Your name</span><input type="text" id="new-user-name" placeholder="e.g. Priya Shah"></label>
-                <label class="field"><span class="lbl">Your role</span>
-                  <select id="new-user-role">${STATE.config.roles.map(r=>`<option>${esc(r)}</option>`).join('')}</select>
-                </label>
-                <label class="field"><span class="lbl">Choose a password (at least 6 characters)</span><input type="password" id="new-user-pw"></label>
-                <label class="field"><span class="lbl">Confirm password</span><input type="password" id="new-user-pw2"></label>
-                <button class="btn btn-accent btn-sm" id="save-new-user">Create account &amp; continue</button>
-              </div>
-            </div>
-          </div>
+  app.innerHTML = `
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg-sidebar);padding:24px;">
+      <div class="panel" style="max-width:380px;width:100%;background:var(--bg-panel);">
+        <div style="padding:26px 26px 10px;text-align:center;">
+          ${STATE.config.logoDataUrl ? `<img src="${STATE.config.logoDataUrl}" style="max-width:180px;margin:0 auto 14px;display:block;">` : `<div class="firm-logo" style="justify-content:center;margin-bottom:14px;"><span class="firm-badge">${esc(STATE.config.firmInitials||'FIRM')}</span><span class="firm-name" style="color:var(--ink);">${esc(STATE.config.firmName||'')}</span></div>`}
+          <h2 style="font-family:var(--font-display);margin:4px 0 4px;">${esc(STATE.config.sidebarTagline||'Asset Verse')}</h2>
+          <div class="hint">Sign in to continue</div>
+        </div>
+        <div class="panel-body" style="padding-top:10px;">
+          <label class="field"><span class="lbl">Login ID (email)</span><input type="email" id="signin-email" autocomplete="username" placeholder="you@example.com"></label>
+          <label class="field"><span class="lbl">Password</span><input type="password" id="signin-pw" autocomplete="current-password"></label>
+          <div id="signin-error" class="hint" style="color:var(--bad);min-height:16px;margin-bottom:4px;"></div>
+          <button class="btn btn-accent" id="signin-go" style="width:100%;">Sign in</button>
+          <div class="hint" style="margin-top:12px;text-align:center;">New here, or forgot your password? Ask your Admin — Configuration → Users &amp; Roles.</div>
         </div>
       </div>
-    `;
-    app.querySelectorAll('[data-signin]').forEach(el=>el.addEventListener('click', ()=>{
-      selectedUserId = el.getAttribute('data-signin'); renderPasswordStep();
-    }));
-    document.getElementById('toggle-add-user').addEventListener('click', ()=>{
-      const f = document.getElementById('add-user-form'); f.style.display = f.style.display==='none' ? 'block' : 'none';
-    });
-    document.getElementById('save-new-user').addEventListener('click', async ()=>{
-      const name = document.getElementById('new-user-name').value.trim();
-      const pw = document.getElementById('new-user-pw').value;
-      const pw2 = document.getElementById('new-user-pw2').value;
-      if(!name){ toast('Enter a name first.', 'bad'); return; }
-      if(pw.length < 6){ toast('Password must be at least 6 characters.', 'bad'); return; }
-      if(pw !== pw2){ toast('Passwords do not match.', 'bad'); return; }
-      const role = document.getElementById('new-user-role').value;
-      const u = { id: uid('user'), name, role, active:true };
-      await setUserPassword(u, pw, false);
-      STATE.config.users.push(u);
-      persistNow('config');
-      setCurrentUser(u.id);
-      recordLoginSuccess();
-      render();
-    });
-  }
+    </div>
+  `;
+  const emailInput = document.getElementById('signin-email');
+  const pwInput = document.getElementById('signin-pw');
+  const errorBox = document.getElementById('signin-error');
 
-  function renderPasswordStep(){
-    const u = STATE.config.users.find(x=>x.id===selectedUserId);
-    app.innerHTML = `
-      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg-sidebar);padding:24px;">
-        <div class="panel" style="max-width:380px;width:100%;background:var(--bg-panel);">
-          <div style="padding:26px 26px 10px;text-align:center;">
-            <h2 style="font-family:var(--font-display);margin:4px 0 4px;">${esc(u.name)}</h2>
-            <div class="hint">${esc(u.role)}</div>
-          </div>
-          <div class="panel-body" style="padding-top:10px;">
-            <label class="field"><span class="lbl">Password</span><input type="password" id="signin-pw" autofocus></label>
-            <div id="signin-error" class="hint" style="color:var(--bad);min-height:16px;margin-bottom:6px;"></div>
-            <button class="btn btn-accent" id="signin-go" style="width:100%;">Sign in</button>
-            <button class="btn btn-ghost btn-sm" id="signin-back" style="width:100%;margin-top:8px;">&larr; Back to team list</button>
-            <div class="hint" style="margin-top:10px;text-align:center;">Forgot your password? Ask your Admin to reset it under Configuration → Users &amp; Roles.</div>
-          </div>
-        </div>
-      </div>
-    `;
-    document.getElementById('signin-back').addEventListener('click', renderList);
-    const pwInput = document.getElementById('signin-pw');
-    const errorBox = document.getElementById('signin-error');
-    async function attempt(){
-      if(loginThrottled()){
-        errorBox.textContent = 'Too many attempts — please wait 15 seconds and try again.';
-        return;
-      }
-      const ok = await verifyPassword(u, pwInput.value);
-      if(!ok){
-        recordLoginFailure();
-        errorBox.textContent = 'Incorrect password.';
-        pwInput.value = ''; pwInput.focus();
-        return;
-      }
-      recordLoginSuccess();
-      setCurrentUser(u.id);
-      render();
+  async function attempt(){
+    if(loginThrottled()){
+      errorBox.textContent = 'Too many attempts — please wait 15 seconds and try again.';
+      return;
     }
-    document.getElementById('signin-go').addEventListener('click', attempt);
-    pwInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') attempt(); });
+    const email = emailInput.value.trim();
+    if(!email || !pwInput.value){ errorBox.textContent = 'Enter your login ID and password.'; return; }
+    let u = findUserByEmail(email);
+    let ok = u ? await verifyPassword(u, pwInput.value) : false;
+    // If it failed and a shared database is connected, the account may have
+    // just been created/reset on another device and not reached us yet —
+    // pull a fresh snapshot once and retry before giving up. This avoids a
+    // false "incorrect password" right after an Admin reset elsewhere.
+    if(!ok && sheetsEnabled()){
+      await pullFromSheets();
+      u = findUserByEmail(email);
+      ok = u ? await verifyPassword(u, pwInput.value) : false;
+    }
+    if(!u || u.active===false || !ok){
+      recordLoginFailure();
+      errorBox.textContent = 'Incorrect login ID or password.';
+      pwInput.value = ''; pwInput.focus();
+      return;
+    }
+    recordLoginSuccess();
+    setCurrentUser(u.id);
+    render();
   }
-
-  renderList();
+  document.getElementById('signin-go').addEventListener('click', attempt);
+  pwInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') attempt(); });
+  emailInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') pwInput.focus(); });
+  emailInput.focus();
 }
 
 /* Forced password change — shown once after an Admin reset, before the
@@ -1722,6 +1777,10 @@ function counts(){
   return { totalFar, reconciled, unreconciled, excess, suggested, totalPhysical: STATE.physical.length };
 }
 
+const VIEW_ICONS = {
+  dashboard:'⌂', master:'📗', pv:'📷', reconciliation:'⇄', valuation:'✎', reports:'▤', settings:'⚙',
+};
+
 function renderShell(){
   const app = document.getElementById('app');
   const c = counts();
@@ -1761,7 +1820,7 @@ function renderShell(){
         <div style="color:#e8e5d8;font-size:12px;font-weight:600;">${esc(currentUser().name)}</div>
         <div style="margin-bottom:4px;">${esc(currentUser().role)}</div>
         ${sheetsEnabled() ? `<span class="pill good" style="margin:2px 0;">● Shared${STATE.outbox.length?` · ${STATE.outbox.length} pending`:''}</span>` : 'Data is stored on this device only, not shared automatically.'}
-        <button id="btn-switch-user">Switch user</button>
+        <button id="btn-switch-user">Sign out</button>
         <button id="btn-change-password">Change my password</button>
         ${isAdmin ? `<button id="btn-reset-demo">Reset to demo data</button>` : ''}
         <div style="opacity:.5;font-size:10px;margin-top:8px;">v${APP_VERSION}</div>
@@ -1769,14 +1828,29 @@ function renderShell(){
     </aside>
     <div class="main">
       <div class="topbar">
-        <div>
-          <div class="crumb">${esc(VIEWS.find(v=>v.id===STATE.view).group)}</div>
-          <h1><button class="menu-toggle" id="menu-toggle">&#9776;</button> ${esc(VIEWS.find(v=>v.id===STATE.view).label)}</h1>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="menu-toggle" id="menu-toggle">&#9776;</button>
+          ${STATE.config.logoDataUrl ? `<img src="${STATE.config.logoDataUrl}" class="mobile-topbar-logo" alt="">` : ''}
+          <div>
+            <div class="crumb">${esc(VIEWS.find(v=>v.id===STATE.view).group)}</div>
+            <h1>${esc(VIEWS.find(v=>v.id===STATE.view).label)}</h1>
+          </div>
         </div>
-        <div class="topbar-actions" id="topbar-actions"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="topbar-actions" id="topbar-actions"></div>
+          <button class="mobile-more-btn" id="mobile-more-btn" aria-label="Account menu">⋯</button>
+        </div>
       </div>
       <div class="content" id="content"></div>
+      <div class="app-footer">© Copyright with S&amp;TA — ${esc(STATE.config.sidebarTagline||'Asset Verse')} v${APP_VERSION}</div>
     </div>
+    <nav class="bottom-nav" id="bottom-nav">
+      ${visibleViews.map(v=>`
+        <button class="bottom-nav-item ${STATE.view===v.id?'active':''}" data-nav="${v.id}">
+          <span class="bn-icon">${VIEW_ICONS[v.id]||'•'}</span><span>${esc(v.label.split(' / ')[0].split(' ')[0])}</span>
+        </button>
+      `).join('')}
+    </nav>
   `;
 
   document.querySelectorAll('[data-nav]').forEach(el=>{
@@ -1793,6 +1867,27 @@ function renderShell(){
       render(); toast('Demo data restored.', 'good');
     });
   });
+  document.getElementById('mobile-more-btn').addEventListener('click', openMobileAccountSheet);
+}
+
+function openMobileAccountSheet(){
+  const isAdmin = currentRole()==='Admin';
+  openModal(`
+    <div class="modal">
+      <div class="modal-head"><h3>${esc(currentUser().name)}</h3><button class="modal-close">&times;</button></div>
+      <div class="modal-body">
+        <div class="hint" style="margin-bottom:12px;">${esc(currentUser().role)} · ${sheetsEnabled() ? 'Shared database connected' : 'This device only'}</div>
+        <button class="btn" style="width:100%;margin-bottom:8px;" id="sheet-change-pw">Change my password</button>
+        ${isAdmin ? `<button class="btn" style="width:100%;margin-bottom:8px;" id="sheet-config">Configuration</button>` : ''}
+        <button class="btn btn-danger" style="width:100%;" id="sheet-signout">Sign out</button>
+      </div>
+    </div>
+  `, { onMount:()=>{
+    document.getElementById('sheet-change-pw').addEventListener('click', ()=>{ closeModal(); openChangePasswordModal(); });
+    document.getElementById('sheet-signout').addEventListener('click', ()=>{ closeModal(); switchUser(); });
+    const cfgBtn = document.getElementById('sheet-config');
+    if(cfgBtn) cfgBtn.addEventListener('click', ()=>{ closeModal(); STATE.view='settings'; render(); });
+  }});
 }
 
 function openConfirm(title, msg, onConfirm){
@@ -1809,6 +1904,7 @@ function openConfirm(title, msg, onConfirm){
 }
 
 function render(){
+  if(STATE.showSplash){ renderSplashScreen(); return; }
   if(STATE.needsFirstRunChoice){ renderFirstRunChoice(); return; }
   if(!currentUser()){ renderSignInScreen(); return; }
   if(currentUser().mustChangePassword){ renderForcePasswordChange(); return; }
@@ -1912,6 +2008,11 @@ function renderDashboard(content, actions){
   const donutStyle = `background:conic-gradient(var(--good) 0% ${pct}%, #eceae0 ${pct}% 100%);`;
 
   content.innerHTML = `
+    <div class="dash-hero">
+      <span class="wordmark">${esc((STATE.config.sidebarTagline||'Asset Verse').toUpperCase())}</span>
+      <span class="rule"></span>
+      <span class="tagline">${esc(STATE.config.orgName || 'Fixed Asset Register')} · ${esc(STATE.config.fyLabel || '')}</span>
+    </div>
     <div class="grid grid-4" style="margin-bottom:20px;">
       <div class="stat-card accent">
         <div class="eyebrow">Book Assets (FAR)</div>
@@ -2710,7 +2811,7 @@ function renderReports(content, actions){
           ${['Structured','Exception'].map(kind=>`
             <div class="nav-label" style="padding:10px 8px 4px;">${kind} reports</div>
             ${REPORT_DEFS.filter(r=>r.kind===kind).map(r=>`
-              <div class="nav-item" style="color:var(--ink);${STATE.ui.reportsTab===r.id?'background:var(--accent-soft);border-color:#e2cd9f;':''}" data-report="${r.id}">${esc(r.label)}</div>
+              <div class="report-nav-item ${STATE.ui.reportsTab===r.id?'active':''}" data-report="${r.id}">${esc(r.label)}</div>
             `).join('')}
           `).join('')}
         </div>
@@ -2849,9 +2950,10 @@ function renderSettingsUsers(body){
   };
   body.innerHTML = `
     <div class="section-note">
-      Sign-in now requires a password (hashed, never stored in plain text) — a real access gate for a trusted
-      internal team, though still not a substitute for enterprise-grade authentication if this tool is ever placed
-      on the open internet. As Admin, you create each person's account below and can reset their password at any time.
+      Sign-in uses a Login ID (email) and password (hashed, never stored in plain text) — a real access gate for a
+      trusted internal team, though still not a substitute for enterprise-grade authentication if this tool is ever
+      placed on the open internet. The role assigned below controls what each person can do, but is never shown to
+      them — they simply see the tool open with the right sections available.
     </div>
     <div class="panel"><div class="panel-head"><div><h3>What each role can do</h3></div></div>
       <div class="panel-body">
@@ -2860,12 +2962,13 @@ function renderSettingsUsers(body){
         </div>
       </div>
     </div>
-    <div class="panel" style="margin-top:16px;"><div class="panel-head"><div><h3>Team members</h3><div class="desc">Shown on the sign-in screen when the tool opens.</div></div>
+    <div class="panel" style="margin-top:16px;"><div class="panel-head"><div><h3>Team members</h3><div class="desc">Their email is their Login ID on the sign-in screen.</div></div>
       <button class="btn btn-accent btn-sm" id="add-user-cfg">+ Add team member</button></div>
       <div class="panel-body">
         ${users.map((u,i)=>`
-          <div class="field-row">
-            <div class="grow"><input type="text" data-u-name="${i}" value="${esc(u.name)}" placeholder="Name"></div>
+          <div class="field-row" style="flex-wrap:wrap;">
+            <div style="flex:1;min-width:130px;"><input type="text" data-u-name="${i}" value="${esc(u.name)}" placeholder="Name"></div>
+            <div style="flex:1;min-width:180px;"><input type="email" data-u-email="${i}" value="${esc(u.email||'')}" placeholder="login-id@example.com"></div>
             <div style="width:190px;"><select data-u-role="${i}">${roles.map(r=>`<option ${u.role===r?'selected':''}>${esc(r)}</option>`).join('')}</select></div>
             <label style="display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ink-soft);white-space:nowrap;"><input type="checkbox" data-u-active="${i}" ${u.active!==false?'checked':''}> active</label>
             <button class="btn btn-sm" data-u-reset="${i}">Reset password</button>
@@ -2877,13 +2980,20 @@ function renderSettingsUsers(body){
   `;
   const rerender = ()=>renderSettingsUsers(body);
   body.querySelectorAll('[data-u-name]').forEach(el=>el.addEventListener('change', ()=>{ users[el.getAttribute('data-u-name')].name = el.value; persist('config'); render(); }));
+  body.querySelectorAll('[data-u-email]').forEach(el=>el.addEventListener('change', ()=>{
+    const idx = el.getAttribute('data-u-email'); const val = el.value.trim();
+    if(val && STATE.config.users.some((u,j)=>j!=idx && String(u.email||'').toLowerCase()===val.toLowerCase())){
+      toast('Another team member already uses that email as their Login ID.', 'bad'); el.value = users[idx].email||''; return;
+    }
+    users[idx].email = val; persist('config');
+  }));
   body.querySelectorAll('[data-u-role]').forEach(el=>el.addEventListener('change', ()=>{ users[el.getAttribute('data-u-role')].role = el.value; persist('config'); render(); }));
   body.querySelectorAll('[data-u-active]').forEach(el=>el.addEventListener('change', ()=>{ users[el.getAttribute('data-u-active')].active = el.checked; persist('config'); }));
   body.querySelectorAll('[data-u-reset]').forEach(el=>el.addEventListener('click', ()=>openResetPasswordModal(users[Number(el.getAttribute('data-u-reset'))])));
   body.querySelectorAll('[data-u-del]').forEach(el=>el.addEventListener('click', ()=>{
     const idx = Number(el.getAttribute('data-u-del'));
     if(users[idx].id === STATE.session.currentUserId) return;
-    openConfirm('Remove this team member?', 'They will no longer appear on the sign-in screen.', ()=>{
+    openConfirm('Remove this team member?', 'They will no longer be able to sign in.', ()=>{
       users.splice(idx,1); persist('config'); rerender(); toast('Removed.', 'good');
     });
   }));
@@ -2898,11 +3008,12 @@ function openNewUserModal(){
       <div class="modal-head"><h3>Add team member</h3><button class="modal-close">&times;</button></div>
       <div class="modal-body">
         <label class="field"><span class="lbl">Name</span><input type="text" id="nu-name" placeholder="e.g. Priya Shah"></label>
+        <label class="field"><span class="lbl">Login ID (email)</span><input type="email" id="nu-email" placeholder="priya@example.com"></label>
         <label class="field"><span class="lbl">Role</span><select id="nu-role">${STATE.config.roles.map(r=>`<option>${esc(r)}</option>`).join('')}</select></label>
         <label class="field"><span class="lbl">Initial password</span>
           <div style="display:flex;gap:8px;"><input type="text" id="nu-pw" placeholder="Set one, or generate below"><button class="btn btn-sm" id="nu-generate" type="button">Generate</button></div>
         </label>
-        <div class="hint">They'll be asked to set their own password on first sign-in.</div>
+        <div class="hint">They'll be asked to set their own password on first sign-in. Their role is never shown to them.</div>
       </div>
       <div class="modal-foot"><button class="btn" data-close-modal>Cancel</button><button class="btn btn-accent" id="nu-save">Add team member</button></div>
     </div>
@@ -2910,16 +3021,20 @@ function openNewUserModal(){
     document.getElementById('nu-generate').addEventListener('click', ()=>{ document.getElementById('nu-pw').value = randomTempPassword(); });
     document.getElementById('nu-save').addEventListener('click', async ()=>{
       const name = document.getElementById('nu-name').value.trim();
+      const email = document.getElementById('nu-email').value.trim();
       const pw = document.getElementById('nu-pw').value || randomTempPassword();
       if(!name){ toast('Enter a name.', 'bad'); return; }
+      if(!email || !email.includes('@')){ toast('Enter a valid email to use as their Login ID.', 'bad'); return; }
+      if(findUserByEmail(email)){ toast('That email is already used as a Login ID by another team member.', 'bad'); return; }
       if(pw.length < 6){ toast('Password must be at least 6 characters.', 'bad'); return; }
       const role = document.getElementById('nu-role').value;
-      const u = { id: uid('user'), name, role, active:true };
+      const u = { id: uid('user'), name, email, role, active:true };
       await setUserPassword(u, pw, true);
       STATE.config.users.push(u);
       persist('config');
+      if(sheetsEnabled()) await pushUsers(); // push immediately, don't wait on the debounce/poll cycle
       closeModal();
-      toast(`Added. Their temporary password is: ${pw} — share it with them; they'll be asked to change it on first sign-in.`, 'good');
+      toast(`Added. Their Login ID is ${email} and temporary password is: ${pw} — share both; they'll be asked to change the password on first sign-in.`, 'good');
       render();
     });
   }});
@@ -2930,6 +3045,7 @@ function openResetPasswordModal(user){
     <div class="modal">
       <div class="modal-head"><h3>Reset password — ${esc(user.name)}</h3><button class="modal-close">&times;</button></div>
       <div class="modal-body">
+        <div class="hint" style="margin-bottom:10px;">Login ID: <b>${esc(user.email||'(no email set)')}</b></div>
         <label class="field"><span class="lbl">New temporary password</span>
           <div style="display:flex;gap:8px;"><input type="text" id="rp-pw" value="${esc(randomTempPassword())}"><button class="btn btn-sm" id="rp-generate" type="button">Generate another</button></div>
         </label>
@@ -2943,9 +3059,22 @@ function openResetPasswordModal(user){
       const pw = document.getElementById('rp-pw').value;
       if(pw.length < 6){ toast('Password must be at least 6 characters.', 'bad'); return; }
       await setUserPassword(user, pw, true);
-      persist('config');
+      persistNow('config');
+      const btn = document.getElementById('rp-save');
+      btn.disabled = true; btn.textContent = 'Saving…';
+      let pushed = true;
+      if(sheetsEnabled()){
+        // push immediately and confirm it actually reached the shared database,
+        // rather than relying on the next background poll — this is what was
+        // causing a stale "Incorrect password" right after a reset.
+        try{ await sheetsCall('save', { table:'users', records:[{ id:user.id, name:user.name, email:user.email||'', role:user.role, active:user.active!==false, passwordHash:user.passwordHash, passwordSalt:user.passwordSalt, mustChangePassword:true, updatedAt:new Date().toISOString() }] }); }
+        catch(e){ pushed = false; queueOutbox({ type:'save', table:'users', record:{ id:user.id, name:user.name, email:user.email||'', role:user.role, active:user.active!==false, passwordHash:user.passwordHash, passwordSalt:user.passwordSalt, mustChangePassword:true, updatedAt:new Date().toISOString() } }); }
+      }
       closeModal();
-      toast(`Password reset. Temporary password: ${pw} — share it with ${user.name}.`, 'good');
+      toast(pushed
+        ? `Password reset. Temporary password: ${pw} — share it with ${user.name}. It's ready to use now.`
+        : `Password reset locally, but could not reach the shared database just now — it will sync automatically once connectivity returns. Wait a moment before sharing the new password with ${user.name}.`,
+        pushed?'good':'warn');
     });
   }});
 }
