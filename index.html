@@ -4,10 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Asset Ledger — Physical Verification &amp; Reconciliation</title>
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" href="./icon-192.png">
-<link rel="apple-touch-icon" href="./icon-192.png">
-<meta name="theme-color" content="#161a17">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -1619,8 +1615,11 @@ function renderFirstRunChoice(){
           <button class="btn btn-accent" id="fr-sample" style="justify-content:flex-start;padding:14px 16px;">
             <div style="text-align:left;"><div style="font-weight:600;">Explore with sample data</div><div class="hint" style="margin-top:2px;">Loads a realistic demo engagement — good for trying the tool out or training your team.</div></div>
           </button>
+          <button class="btn" id="fr-join" style="justify-content:flex-start;padding:14px 16px;">
+            <div style="text-align:left;"><div style="font-weight:600;">Join my team's existing setup</div><div class="hint" style="margin-top:2px;">Use this on a phone, laptop, or the Windows app that hasn't connected to your team's shared database yet.</div></div>
+          </button>
           <button class="btn" id="fr-fresh" style="justify-content:flex-start;padding:14px 16px;">
-            <div style="text-align:left;"><div style="font-weight:600;">Start fresh for a real client / engagement</div><div class="hint" style="margin-top:2px;">Starts completely empty. You'll set up your own asset groups, locations, and team next.</div></div>
+            <div style="text-align:left;"><div style="font-weight:600;">Start fresh for a brand-new engagement</div><div class="hint" style="margin-top:2px;">Starts completely empty, on this device only. You'll set up asset groups, locations, and your team next.</div></div>
           </button>
         </div>
         <div class="hint" style="padding:0 26px 20px;text-align:center;">Version ${APP_VERSION}</div>
@@ -1641,6 +1640,92 @@ function renderFirstRunChoice(){
     await persist('config');
     render();
   });
+  document.getElementById('fr-join').addEventListener('click', ()=>{
+    openConnectSharedDbModal(async (ok)=>{
+      if(ok){ STATE.needsFirstRunChoice = false; render(); }
+    });
+  });
+}
+
+/* ============================ CONNECT TO SHARED DATABASE (pre-login) ===========
+   Reachable from the first-run screen AND the sign-in screen — this is what
+   closes the dead-end where a brand-new device has no account yet, and no
+   way to reach Configuration (which normally requires being signed in) to
+   paste the team's shared database link. Once connected here, a fresh pull
+   brings in the real team's accounts so sign-in works normally. */
+/* Only offered when there are zero accounts anywhere AND no shared database
+   is connected — a genuinely first-ever setup, with no existing Admin to
+   ask and nothing to pull. Creates a real, password-protected Admin account
+   directly, so the tool never has to fall back to "no password" access. */
+function openCreateFirstAdminModal(){
+  openModal(`
+    <div class="modal">
+      <div class="modal-head"><h3>Create the first Admin account</h3><button class="modal-close">&times;</button></div>
+      <div class="modal-body">
+        <label class="field"><span class="lbl">Your name</span><input type="text" id="fa-name" placeholder="e.g. Mayank Parekh"></label>
+        <label class="field"><span class="lbl">Login ID (email)</span><input type="email" id="fa-email" placeholder="you@example.com"></label>
+        <label class="field"><span class="lbl">Password (at least 6 characters)</span><input type="password" id="fa-pw"></label>
+        <label class="field"><span class="lbl">Confirm password</span><input type="password" id="fa-pw2"></label>
+        <div id="fa-error" class="hint" style="color:var(--bad);min-height:16px;"></div>
+      </div>
+      <div class="modal-foot"><button class="btn" data-close-modal>Cancel</button><button class="btn btn-accent" id="fa-save">Create account &amp; sign in</button></div>
+    </div>
+  `, { onMount:()=>{
+    document.getElementById('fa-save').addEventListener('click', async ()=>{
+      const name = document.getElementById('fa-name').value.trim();
+      const email = document.getElementById('fa-email').value.trim();
+      const pw = document.getElementById('fa-pw').value;
+      const pw2 = document.getElementById('fa-pw2').value;
+      const err = document.getElementById('fa-error');
+      if(!name){ err.textContent = 'Enter your name.'; return; }
+      if(!email || !email.includes('@')){ err.textContent = 'Enter a valid email.'; return; }
+      if(pw.length < 6){ err.textContent = 'Password must be at least 6 characters.'; return; }
+      if(pw !== pw2){ err.textContent = 'Passwords do not match.'; return; }
+      const u = { id: uid('user'), name, email, role:'Admin', active:true };
+      await setUserPassword(u, pw, false);
+      STATE.config.users.push(u);
+      await persistNow('config');
+      setCurrentUser(u.id);
+      closeModal();
+      render();
+    });
+  }});
+}
+
+function openConnectSharedDbModal(onDone){
+  openModal(`
+    <div class="modal">
+      <div class="modal-head"><h3>Connect to your team's shared database</h3><button class="modal-close">&times;</button></div>
+      <div class="modal-body">
+        <div class="hint" style="margin-bottom:10px;">Paste the same Web App URL an Admin already set up for your team (Configuration → Shared Team Database on any device already connected).</div>
+        <label class="field"><span class="lbl">Web App URL</span><input type="text" id="csd-url" placeholder="https://script.google.com/macros/s/.../exec"></label>
+        <div id="csd-error" class="hint" style="color:var(--bad);min-height:16px;"></div>
+      </div>
+      <div class="modal-foot"><button class="btn" data-close-modal>Cancel</button><button class="btn btn-accent" id="csd-connect">Connect &amp; sign in</button></div>
+    </div>
+  `, { onMount:(backdrop)=>{
+    backdrop.querySelectorAll('.modal-close, [data-close-modal]').forEach(b=>b.addEventListener('click', ()=>{ if(onDone) onDone(false); }));
+    document.getElementById('csd-connect').addEventListener('click', async ()=>{
+      const url = document.getElementById('csd-url').value.trim();
+      const err = document.getElementById('csd-error');
+      if(!url){ err.textContent = 'Paste the URL first.'; return; }
+      const btn = document.getElementById('csd-connect');
+      btn.disabled = true; btn.textContent = 'Connecting…';
+      STATE.config.sheetsWebAppUrl = url;
+      const ok = await pullFromSheets();
+      if(!ok){
+        btn.disabled = false; btn.textContent = 'Connect & sign in';
+        err.textContent = 'Could not reach that URL — check it was copied exactly, and that this device has internet access.';
+        STATE.config.sheetsWebAppUrl = '';
+        return;
+      }
+      await persistNow('config');
+      closeModal();
+      toast("Connected — your team's accounts and data are now available on this device.", 'good');
+      if(onDone) onDone(true);
+      else render();
+    });
+  }});
 }
 
 /* ============================ SIGN-IN GATE ===================================== */
@@ -1661,10 +1746,18 @@ function renderSignInScreen(){
           <div id="signin-error" class="hint" style="color:var(--bad);min-height:16px;margin-bottom:4px;"></div>
           <button class="btn btn-accent" id="signin-go" style="width:100%;">Sign in</button>
           <div class="hint" style="margin-top:12px;text-align:center;">New here, or forgot your password? Ask your Admin — Configuration → Users &amp; Roles.</div>
+          ${!sheetsEnabled() ? `<button class="btn btn-ghost btn-sm" id="signin-connect-shared" style="width:100%;margin-top:10px;">This device isn't connected to my team's data yet</button>` : ''}
+          ${(STATE.config.users.length===0 && !sheetsEnabled()) ? `<button class="btn btn-ghost btn-sm" id="signin-create-first-admin" style="width:100%;margin-top:4px;">This is a brand-new setup — create the first Admin account</button>` : ''}
         </div>
       </div>
     </div>
   `;
+  const connectBtn = document.getElementById('signin-connect-shared');
+  if(connectBtn) connectBtn.addEventListener('click', ()=>{
+    openConnectSharedDbModal((ok)=>{ render(); });
+  });
+  const createFirstBtn = document.getElementById('signin-create-first-admin');
+  if(createFirstBtn) createFirstBtn.addEventListener('click', openCreateFirstAdminModal);
   const emailInput = document.getElementById('signin-email');
   const pwInput = document.getElementById('signin-pw');
   const errorBox = document.getElementById('signin-error');
@@ -3400,13 +3493,6 @@ async function init(){
   }
 }
 init();
-</script>
-<script>
-if('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost')){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
-  });
-}
 </script>
 </body>
 </html>
