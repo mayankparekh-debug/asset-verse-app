@@ -599,6 +599,19 @@ function randomTempPassword(){
   return w + n;
 }
 let loginAttemptState = { count:0, lockedUntil:0 };
+/* True while someone has an input/select/textarea focused anywhere in the
+   main content area — used to stop the periodic background refresh from
+   overwriting a plain (non-modal) form mid-edit, e.g. Configuration →
+   Users & Roles. Modals are handled separately (see the modal-backdrop
+   check next to every use of this). */
+function isEditingFormField(){
+  const el = document.activeElement;
+  if(!el) return false;
+  const tag = el.tagName;
+  if(tag!=='INPUT' && tag!=='SELECT' && tag!=='TEXTAREA') return false;
+  const content = document.getElementById('content');
+  return !!(content && content.contains(el));
+}
 function loginThrottled(){
   return Date.now() < loginAttemptState.lockedUntil;
 }
@@ -3086,8 +3099,12 @@ function renderSettingsUsers(body){
   body.querySelectorAll('[data-u-del]').forEach(el=>el.addEventListener('click', ()=>{
     const idx = Number(el.getAttribute('data-u-del'));
     if(users[idx].id === STATE.session.currentUserId) return;
-    openConfirm('Remove this team member?', 'They will no longer be able to sign in.', ()=>{
-      users.splice(idx,1); persist('config'); rerender(); toast('Removed.', 'good');
+    const removedId = users[idx].id;
+    openConfirm('Remove this team member?', 'They will no longer be able to sign in.', async ()=>{
+      users.splice(idx,1);
+      persist('config');
+      await pushDelete('users', removedId); // must explicitly delete the row — pushing the remaining list only upserts, it never removes rows that are gone locally
+      rerender(); toast('Removed.', 'good');
     });
   }));
   document.getElementById('add-user-cfg').addEventListener('click', ()=>{
@@ -3472,18 +3489,22 @@ async function init(){
   // keep the dashboard "live" — recompute its tables/stats every few seconds
   // without requiring the user to navigate away and back. Guarded on
   // currentUser() so this never interrupts someone still on the sign-in /
-  // password screen (a re-render there would wipe whatever they'd typed).
-  setInterval(()=>{ if(currentUser() && STATE.view==='dashboard' && !document.getElementById('modal-backdrop')){ render(); } }, 6000);
+  // password screen (a re-render there would wipe whatever they'd typed) —
+  // and on isEditingFormField() so it never yanks a page out from under
+  // someone actively editing a plain (non-modal) form, e.g. Users & Roles.
+  setInterval(()=>{ if(currentUser() && STATE.view==='dashboard' && !document.getElementById('modal-backdrop') && !isEditingFormField()){ render(); } }, 6000);
 
   if(sheetsEnabled()){
     // pull the shared snapshot regularly so everyone's screens converge —
-    // skip the refresh while a modal is open (so we don't yank a form out
-    // from under someone mid-edit) and skip it entirely before sign-in.
+    // skip the refresh while a modal is open, while someone is actively
+    // typing in a form field on the page, and skip it entirely before
+    // sign-in.
     setInterval(async ()=>{
       if(!currentUser()) return;
       if(document.getElementById('modal-backdrop')) return;
+      if(isEditingFormField()) return;
       const ok = await pullFromSheets();
-      if(ok && currentUser()) render();
+      if(ok && currentUser() && !isEditingFormField()) render();
     }, 10000);
     // retry anything that failed to reach the shared database earlier
     setInterval(flushOutbox, 5000);
