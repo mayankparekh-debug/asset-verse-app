@@ -378,7 +378,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent-soft);bor
    ========================================================================= */
 
 /* ---------------------------- constants -------------------------------- */
-const APP_VERSION = '1.5.0';
+const APP_VERSION = '1.6.0';
+const BUILD_STAMP = '2026-08-13-A'; // change this any time you deploy, then check it matches on every device
 const STORAGE_KEYS = {
   config: 'fal:config',
   master: 'fal:assetMaster',
@@ -1609,6 +1610,7 @@ function renderSplashScreen(){
       <div class="splash-title">${esc(STATE.config.sidebarTagline || 'Asset Verse')}</div>
       <div class="splash-sub">Fixed Asset Verification &amp; Reconciliation</div>
       <div class="splash-bar"><div></div></div>
+      <div style="color:#6d7566;font-family:var(--font-mono);font-size:10px;margin-top:16px;">v${APP_VERSION} · build ${BUILD_STAMP}</div>
     </div>
   `;
   setTimeout(()=>{ STATE.showSplash = false; render(); }, 1400);
@@ -1752,6 +1754,7 @@ function renderSignInScreen(){
           ${STATE.config.logoDataUrl ? `<img src="${STATE.config.logoDataUrl}" style="max-width:180px;margin:0 auto 14px;display:block;">` : `<div class="firm-logo" style="justify-content:center;margin-bottom:14px;"><span class="firm-badge">${esc(STATE.config.firmInitials||'FIRM')}</span><span class="firm-name" style="color:var(--ink);">${esc(STATE.config.firmName||'')}</span></div>`}
           <h2 style="font-family:var(--font-display);margin:4px 0 4px;">${esc(STATE.config.sidebarTagline||'Asset Verse')}</h2>
           <div class="hint">Sign in to continue</div>
+          <div style="font-family:var(--font-mono);font-size:9.5px;color:var(--ink-faint);margin-top:4px;">v${APP_VERSION} · build ${BUILD_STAMP}</div>
         </div>
         <div class="panel-body" style="padding-top:10px;">
           <label class="field"><span class="lbl">Login ID (email)</span><input type="email" id="signin-email" autocomplete="username" placeholder="you@example.com"></label>
@@ -1929,7 +1932,7 @@ function renderShell(){
         <button id="btn-switch-user">Sign out</button>
         <button id="btn-change-password">Change my password</button>
         ${isAdmin ? `<button id="btn-reset-demo">Reset to demo data</button>` : ''}
-        <div style="opacity:.5;font-size:10px;margin-top:8px;">v${APP_VERSION}</div>
+        <div style="opacity:.5;font-size:10px;margin-top:8px;">v${APP_VERSION} · ${BUILD_STAMP}</div>
       </div>
     </aside>
     <div class="main">
